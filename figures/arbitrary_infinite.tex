@@ -1,0 +1,12 @@
+\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,thick]
+\tikzstyle{state}=[circle,draw,minimum size=1cm]
+\node [state] (v1) at (-1.5,1) {x};
+\node [state] (v2) at (1.5,1) {y};
+\node [state] (v3) at (0,-1) {z};
+
+\path[every node/.style={font=\sffamily\small}]
+    (v1) edge node [above] {a} (v2)
+    (v2) edge node [right] {a} (v3)
+    (v3) edge node [below] {a} (v1);
+
+\end{tikzpicture}
