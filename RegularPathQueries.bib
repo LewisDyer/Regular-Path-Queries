@@ -17,6 +17,23 @@
   file = {C\:\\Users\\Lewis\\Zotero\\storage\\XFXRM63G\\Ackerman and Shallit - 2009 - Efficient enumeration of words in regular language.pdf;C\:\\Users\\Lewis\\Zotero\\storage\\KY8B52W9\\S0304397509002345.html}
 }
 
+@article{baganTrichotomyRegularSimple2020,
+  title = {A Trichotomy for Regular Simple Path Queries on Graphs},
+  author = {Bagan, Guillaume and Bonifati, Angela and Groz, Benoit},
+  year = {2020},
+  month = mar,
+  journal = {Journal of Computer and System Sciences},
+  volume = {108},
+  pages = {29--48},
+  issn = {0022-0000},
+  doi = {10.1016/j.jcss.2019.08.006},
+  urldate = {2023-03-22},
+  abstract = {We focus on the computational complexity of regular simple path queries (RSPQs). We consider the following problem RSPQ(L) for a regular language L: given an edge-labeled digraph G and two nodes x and y, is there a simple path from x to y that forms a word belonging to L? We fully characterize the frontier between tractability and intractability for RSPQ(L). More precisely, we prove RSPQ(L) is either Image 1, Image 2-complete or Image 3-complete depending on the language L. We also provide a simple characterization of the tractable fragment in terms of regular expressions. Finally, we also discuss the complexity of deciding whether a language L belongs to the fragment above. We consider several alternative representations of L: DFAs, NFAs or regular expressions, and prove that this problem is Image 4-complete for the first representation and Image 5-complete for the other two.},
+  langid = {english},
+  keywords = {Automata,Complexity,Graphs,Paths,Regular languages,Regular simple paths},
+  file = {C\:\\Users\\Lewis\\Zotero\\storage\\67578IF9\\1-s2.0-S0022000018305312-main.pdf;C\:\\Users\\Lewis\\Zotero\\storage\\H3SRXXK2\\1-s2.0-S0022000018305312-main.pdf}
+}
+
 @article{bonifatiAnalyticalStudyLarge2020,
   title = {An Analytical Study of Large {{SPARQL}} Query Logs},
   author = {Bonifati, Angela and Martens, Wim and Timm, Thomas},
@@ -35,6 +52,25 @@
   file = {C\:\\Users\\Lewis\\Zotero\\storage\\UHGL7WM8\\Bonifati et al. - 2020 - An analytical study of large SPARQL query logs.pdf}
 }
 
+@inproceedings{jhaPathSamplingFast2015,
+  title = {Path {{Sampling}}: {{A Fast}} and {{Provable Method}} for {{Estimating}} 4-{{Vertex Subgraph Counts}}},
+  shorttitle = {Path {{Sampling}}},
+  booktitle = {Proceedings of the 24th {{International Conference}} on {{World Wide Web}}},
+  author = {Jha, Madhav and Seshadhri, C. and Pinar, Ali},
+  year = {2015},
+  month = may,
+  series = {{{WWW}} '15},
+  pages = {495--505},
+  publisher = {{International World Wide Web Conferences Steering Committee}},
+  address = {{Republic and Canton of Geneva, CHE}},
+  doi = {10.1145/2736277.2741101},
+  urldate = {2022-10-11},
+  abstract = {Counting the frequency of small subgraphs is a fundamental technique in network analysis across various domains, most notably in bioinformatics and social networks. The special case of triangle counting has received much attention. Getting results for 4-vertex patterns is highly challenging, and there are few practical results known that can scale to massive sizes. Indeed, even a highly tuned enumeration code takes more than a day on a graph with millions of edges. Most previous work that runs for truly massive graphs employ clusters and massive parallelization. We provide a sampling algorithm that provably and accurately approximates the frequencies of all 4-vertex pattern subgraphs. Our algorithm is based on a novel technique of 3-path sampling and a special pruning scheme to decrease the variance in estimates. We provide theoretical proofs for the accuracy of our algorithm, and give formal bounds for the error and confidence of our estimates. We perform a detailed empirical study and show that our algorithm provides estimates within 1\% relative error for all subpatterns (over a large class of test graphs), while being orders of magnitude faster than enumeration and other sampling based algorithms. Our algorithm takes less than a minute (on a single commodity machine) to process an Orkut social network with 300 million edges.},
+  isbn = {978-1-4503-3469-3},
+  keywords = {graphlet distribution,motif counting,path sampling,sampling algorithms,subgraph counting},
+  file = {C\:\\Users\\Lewis\\Zotero\\storage\\KZWNLFN4\\Jha et al. - 2015 - Path Sampling A Fast and Provable Method for Esti.pdf}
+}
+
 @article{lapaughEvenpathProblemGraphs1984,
   title = {The Even-Path Problem for Graphs and Digraphs},
   author = {Lapaugh, Andrea S. and Papadimitriou, Christos H.},
@@ -49,6 +85,24 @@
   abstract = {We give a simple linear-time algorithm for finding even-length simple paths between two specified nodes of a given graph. We show that the same problem for directed graphs is NP-complete.},
   langid = {english},
   file = {C\:\\Users\\Lewis\\Zotero\\storage\\E8EWW2DW\\Lapaugh and Papadimitriou - 1984 - The even-path problem for graphs and digraphs.pdf;C\:\\Users\\Lewis\\Zotero\\storage\\UM7M2G4W\\net.html}
+}
+
+@inproceedings{libkinRegularPathQueries2012,
+  title = {Regular Path Queries on Graphs with Data},
+  booktitle = {Proceedings of the 15th {{International Conference}} on {{Database Theory}}},
+  author = {Libkin, Leonid and Vrgo{\v c}, Domagoj},
+  year = {2012},
+  month = mar,
+  series = {{{ICDT}} '12},
+  pages = {74--85},
+  publisher = {{Association for Computing Machinery}},
+  address = {{New York, NY, USA}},
+  doi = {10.1145/2274576.2274585},
+  urldate = {2023-03-31},
+  abstract = {Graph data models received much attention lately due to applications in social networks, semantic web, biological databases and other areas. Typical query languages for graph databases retrieve their topology, while actual data stored in them is usually queried using standard relational mechanisms. Our goal is to develop techniques that combine these two modes of querying, and give us query languages that can ask questions about both data and topology. As the basic querying mechanism we consider regular path queries, with the key difference that conditions on paths between nodes now talk not only about labels but also specify how data changes along the path. Paths that combine edge labels with data values are closely related to data words, so for stating conditions in queries, we look at several data-word formalisms developed recently. We show that many of them immediately lead to intractable data complexity for graph queries, with the notable exception of register automata, which can specify many properties of interest, and have NLogspace data and Pspace combined complexity. As register automata themselves are not easy to use in querying, we define two types of extensions of regular expressions that are more user-friendly, and develop query evaluation techniques for them. For one class, regular expressions with memory, we achieve the same bounds as for automata, and for the other class, regular expressions with equality, we also obtain tractable combined complexity of query evaluation. In addition, we show that results extends to analogs of conjunctive regular path queries.},
+  isbn = {978-1-4503-0791-8},
+  keywords = {data values,graph databases,register automata,regular expressions,regular path queries},
+  file = {C\:\\Users\\Lewis\\Zotero\\storage\\5TKK9FLT\\Libkin and Vrgoč - 2012 - Regular path queries on graphs with data.pdf}
 }
 
 @inproceedings{martensEvaluationEnumerationProblems2018,

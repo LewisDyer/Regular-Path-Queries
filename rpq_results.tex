@@ -3,13 +3,15 @@
 \usepackage{amsmath, amssymb, graphicx}
 \usepackage{tikz}
 \usepackage{listings}
-
+\lstset{basicstyle=\ttfamily}
 \title{Regular Path Queries in Graph Databases}
 \date{\today}
 \author{Lewis Dyer}
 
 \begin{document}
 \maketitle
+
+Regular path queries are a common formalism to describe paths in graph databases under certain constraints. In particular, regular path queries describe constraints on paths by forming words from paths based on the edge labels included in these paths, and accept paths whose words are accepted by some regular expression $r$. The remainder of this paper is structured as follows. In Section \ref{sec:prelims}, we introduce some preliminary notions from graph and automata theory, while in Section \ref{sec:intro_rpqs} we formally introduce regular path queries, discuss where regular path queries are used in practice, and consider various different semantics for evaluating regular path queries. In Section \ref{sec:complexity} we consider the complexity of several variants of the evaluation problem on regular path queries, and in Section \ref{sec:simple_characterisation} we discuss various methods for characterising regular path queries when looking for simple paths between two vertices. Finally, in Section \ref{sec:future_work} we briefly discuss some potential future directions for research in regular path queries.
 
 \begin{itemize}
     \item Formally define Regular Path Queries, and give an example or two.
@@ -54,13 +56,15 @@ Simple paths avoid this lack of intuition while also avoiding paths of infinite 
 
 Regular path queries are applied in SPARQL, a database query language providing specific syntax for graph traversals, via the use of \emph{property paths} \cite{SPARQLQueryLanguage}. For example, the following query from the Wikidata knowledge graph \cite{WikidataSPARQLQuery} uses such a property path:
 
-\begin{lstlisting}
+
+\begin{lstlisting}[language=SPARQL]
 SELECT ?siteLabel ?coord ?image ?site
 WHERE {
    ?site wdt:P31/wdt:P279* wd:Q839954 ;
       wdt:P625 ?coord ;
       wdt:P18 ?image .
-SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}
+SERVICE wikibase:label { bd:serviceParam
+wikibase:language "[AUTO_LANGUAGE],en".}
 }
 \end{lstlisting}
 
@@ -91,19 +95,31 @@ Considering this product as an NFA allows us to extend this procedure to solve \
 
 As discussed in Section \ref{sec:complexity}, \textsc{SimPath} and \textsc{EnumSimPaths} are in general intractable over all possible regular expressions, with \textsc{SimPath} being NP-complete with the regular expression $(aa)^*$ as shown by Lapaugh and Papadimitriou in \cite{lapaughEvenpathProblemGraphs1984}, and \textsc{EnumSimPaths} being \#P-complete with the regular expression $a^*$ as shown by Valiant in \cite{valiantComplexityComputingPermanent1979}. A natural further question is whether a particular class of regular expressions allows for tractable decision and enumeration, and moreover whether this class is sufficiently powerful to handle regular path queries that are used in practice.
 
-Martens and Trauter tackle this question in \cite{martensEvaluationEnumerationProblems2018} by defining the class of \emph{simple transitive expressions} (STEs for short). In this class, we define \emph{atomic expressions} as expressions of the form $(a_1 + \dots a_n)$ for $a_i \in \Sigma$, which we denote as $A$. Note that since the order of elements in this expression is unimportant, we also denote $A$ as a subset of $\Sigma$, such that $a_i \in A$ if and only if $a_i$ is accepted by $A$, and we also allow for $A$ to be the emptyset, in which case $\epsilon$ is the only string accepted by $A$. We then further define \emph{bounded expressions} as expressions of the form $A_1 \dots A_k$ or $A_1 ? \dots A_k ?$ for some $k \geq 0$ such that each $A_i$ is an atomic expression. Finally, a simple transitive expression is an expression of the form $B_{pre}A^* B_{post}$, such that $B_{pre}$ and $B_{post}$ are bounded expressions while $A$ is an atomic expression.
+Bagan et al. introduce a trichotomy for \textsc{SimPath} in \cite{baganTrichotomyRegularSimple2020}. Specifically, they define the family of tractable languages $C_{tract}$ as follows. A language is in $C_{tract}$ if and only if, for some $i \in \mathbb{N}$, we have that for any words $w_l, w_m, w_r$ and any non-empty words $w_1, w_2$, if $w_l w_1^i w_m w_2^i w_r \in L$ then it follows that $w_l w_1^i w_2^i w_r \in L$. For example, over the alphabet $\Sigma = \{a, b, c\}$, the regular language defined by the expression $ab^*$ is in $C_{tract}$, by taking $i=1$ and considering the cases where $w_l$ is empty or non-empty, arguing that $a$ must either be included in $w_1$ or $w_l$ respectively. The trichotomy then proceeds from this definition: \textsc{SimPath} is NP-complete for languages not in $C_{tract}$, NL-complete for infinite languages in $C_{tract}$, and in $AC^0$ for finite languages in $C_{tract}$.
+
+Martens and Trauter tackle this question for \textsc{EnumSimPaths} in \cite{martensEvaluationEnumerationProblems2018} by defining the class of \emph{simple transitive expressions} (STEs for short). In this class, we define \emph{atomic expressions} as expressions of the form $(a_1 + \dots a_n)$ for $a_i \in \Sigma$, which we denote as $A$. Note that since the order of elements in this expression is unimportant, we also denote $A$ as a subset of $\Sigma$, such that $a_i \in A$ if and only if $a_i$ is accepted by $A$, and we also allow for $A$ to be the emptyset, in which case $\epsilon$ is the only string accepted by $A$. We then further define \emph{bounded expressions} as expressions of the form $A_1 \dots A_k$ or $A_1 ? \dots A_k ?$ for some $k \geq 0$ such that each $A_i$ is an atomic expression. Finally, a simple transitive expression is an expression of the form $B_{pre}A^* B_{post}$, such that $B_{pre}$ and $B_{post}$ are bounded expressions while $A$ is an atomic expression.
 
 Intuitively, the main idea behind STEs is that a bounded amount of local navigation is permitted at the start and end of each expression, consisting of testing paths either of length exactly $k$ or with length at most $k$. Then, the optional transitive step in the middle of the expression is sufficiently simple.
 
-Following this, Martens and Trauter define a dichotomy over classes of STEs using the notion of \emph{cuttability} - intuitively speaking, that parts of the expression which do not match the transitive part should only occur within a constant distance of the start or end of the expression. More precisely, we define the \emph{left cut border} of an STE $r$ as the largest value $c_l$ such that, for $B_pre = A_1 \dots A_k$, $T$ is not a subset of $A_{c_l}$, or zero if either this value does not exist or $B_pre$ is of the form $A_1 ? \dots A_k ?$. The right cut border $c_r$ is defined analogously, reversing the indices in $B_{post}$, and we say an expression has cut border $c$ if the maximum of its left and right cut borders is $c$, and in particular that a class of STEs $\mathcal{R}$ is \emph{cuttable} if there exists a constant $c$ such that every expression in $\mathcal{R}$ has cut border at most $c$. We also need one more mild condition on classes of STEs. Given some class of STEs $\mathcal{R}$, we say $\mathcal{R}$ can be sampled if there exists an algorithm that, given any $k$, either returns a expression in $\mathcal{R}$ whose cut border is greater than $k$, or else returns that such an expression does not exist.
+Following this, Martens and Trauter define a dichotomy over classes of STEs using the notion of \emph{cuttability} - intuitively speaking, that parts of the expression which do not match the transitive part should only occur within a constant distance of the start or end of the expression. More precisely, we define the \emph{left cut border} of an STE $r$ as the largest value $c_l$ such that, for $B_{pre} = A_1 \dots A_k$, $T$ is not a subset of $A_{c_l}$, or zero if either this value does not exist or $B_pre$ is of the form $A_1 ? \dots A_k ?$. The right cut border $c_r$ is defined analogously, reversing the indices in $B_{post}$, and we say an expression has cut border $c$ if the maximum of its left and right cut borders is $c$, and in particular that a class of STEs $\mathcal{R}$ is \emph{cuttable} if there exists a constant $c$ such that every expression in $\mathcal{R}$ has cut border at most $c$. We also need one more mild condition on classes of STEs. Given some class of STEs $\mathcal{R}$, we say $\mathcal{R}$ can be sampled if there exists an algorithm that, given any $k$, either returns a expression in $\mathcal{R}$ whose cut border is greater than $k$, or else returns that such an expression does not exist.
 
 Given this relatively mild condition, we obtain the following dichotomy: for any class of STEs $\mathcal{R}$ that can be sampled, if $\mathcal{R}$ is cuttable then $\textsc{SimPath}$ is $FPT$ over any $r \in \mathcal{R}$ parameterised by the length of $r$. Otherwise, $\textsc{SimPath}$ is W[1]-hard for any $r \in \mathcal{R}$.
 
-While this dichotomy is powerful within the class of STEs, one notable shortcoming is that the class of STEs is quite a limited subset of regular expressions. For example, the regular expressions $a + b^+$ and $(ab)*$ are not STEs. However, analysis of SPARQL query logs performed by Bonifati et al. in \cite{bonifatiAnalyticalStudyLarge2020} shows that $99.992\%$ of regular path queries in these query logs are STEs, and the vast majority of STEs in these query logs have cut border at most $2$.
+While this dichotomy is powerful within the class of STEs, one notable shortcoming is that the class of STEs is quite a limited subset of regular expressions. For example, the regular expressions $a + b^+$ and $(ab)^*$ are not STEs. However, analysis of SPARQL query logs performed by Bonifati et al. in \cite{bonifatiAnalyticalStudyLarge2020} shows that $99.992\%$ of regular path queries in these query logs are STEs, and the vast majority of STEs in these query logs have cut border at most $2$, so in practice considering STEs covers both many common occurrences
 
-Moving onto enumeration problems, Yen's algorithm \cite{yenFindingShortestLoopless1971} provides a polyomial delay algorithm to enumerate all simple paths between two vertices $s$ and $t$, without any sort of labelling on edges. Informally, this algorithm operates by finding a shortest path between $s$ and $t$, since any shortest path must also be a simple path. We then consider modifications of this path where the first $i$ edges coincide match but the $(i+1)$th edge differs, continually repeating this procedure until all simple paths are found.
+Moving onto enumeration problems, Yen's algorithm \cite{yenFindingShortestLoopless1971} provides a polyomial delay algorithm to enumerate all simple paths between two vertices $s$ and $t$, without any sort of labelling on edges. Informally, this algorithm operates by finding a shortest path between $s$ and $t$, since any shortest path must also be a simple path. We then consider modifications of this path where the first $i$ edges coincide but the $(i+1)$th edge differs, continually repeating this procedure until all simple paths are found.
 
-Turning back to edge labels, Martens and Trauter show this algorithm can be modified to to solve \textsc{EnumSimPaths} in polynomial delay for the set of regular expressions that are downward closed, which are the set of regular expressions $r$ such that for any word $a_1 a_2 \dots a_n \in L(r)$, and any sequence $0 < i_1 < \dots < i_k < n + 1$, we have that the subsequence $a_{i_1} \dots a_{i_k}$ is in $L(r)$. This result is further extended by modifying Yen's algorithm to compute simple paths rather than shortest paths, allowing for \textsc{EnumSimPaths} to be solved in polynomial delay for all cuttable STEs.
+Returning to edge labelled graphs, Martens and Trauter show this algorithm can be modified to to solve \textsc{EnumSimPaths} in polynomial delay for the set of regular expressions that are downward closed, which are the set of regular expressions $r$ such that for any word $a_1 a_2 \dots a_n \in L(r)$, and any sequence $0 < i_1 < \dots < i_k < n + 1$, the subsequence $a_{i_1} \dots a_{i_k}$ is in $L(r)$. This result is further extended by modifying Yen's algorithm to compute simple paths rather than shortest paths, allowing for \textsc{EnumSimPaths} to be solved in polynomial delay for all cuttable STEs.
+
+\section{Future work}
+\label{sec:future_work}
+
+\begin{itemize}
+    \item We also remark that many graph problems can be expressed via regular path queries. For example, by taking a graph on $n$ vertices where every edge has label $a$, finding simple paths accepted by the regular expression $a^{n-1}$ is equivalent to finding a Hamiltonian path on the graph. Similarly, by giving each edge of a graph $H$ distinct labels and finding a walk on $H$ including all edges, a regular path query may be used to find non-induced subgraphs of $G$ which are isomorphic to $H$. This correspondence between graph theoretic problems and regular path queries could be particularly useful in informing why we expect certain regular path queries to be tractable or intractable.
+    \item Libkin and Vrgoc define an extension to regular path queries known as \emph{data paths} in \cite{libkinRegularPathQueries2012}, where each vertex is also labelled. This allows for queries that simultaneously consider both the structure of a graph and data contained on the graph, which may be more suited to graph databases.
+    \item 
+
+\end{itemize}
 
 \bibliographystyle{ieeetr}
 \bibliography{RegularPathQueries}
