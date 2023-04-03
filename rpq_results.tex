@@ -116,8 +116,8 @@ Returning to edge labelled graphs, Martens and Trauter show this algorithm can b
 
 \begin{itemize}
     \item We also remark that many graph problems can be expressed via regular path queries. For example, by taking a graph on $n$ vertices where every edge has label $a$, finding simple paths accepted by the regular expression $a^{n-1}$ is equivalent to finding a Hamiltonian path on the graph. Similarly, by giving each edge of a graph $H$ distinct labels and finding a walk on $H$ including all edges, a regular path query may be used to find non-induced subgraphs of $G$ which are isomorphic to $H$. This correspondence between graph theoretic problems and regular path queries could be particularly useful in informing why we expect certain regular path queries to be tractable or intractable.
-    \item Libkin and Vrgoc define an extension to regular path queries known as \emph{data paths} in \cite{libkinRegularPathQueries2012}, where each vertex is also labelled. This allows for queries that simultaneously consider both the structure of a graph and data contained on the graph, which may be more suited to graph databases.
-    \item 
+    \item Libkin and Vrgoc define an extension to regular path queries known as \emph{data paths} in \cite{libkinRegularPathQueries2012}, where each vertex is also labelled. This allows for queries that simultaneously consider both the structure of a graph and data contained on the graph, which may be more suited to queries in graph databases.
+    \item In \cite{bonifatiAnalyticalStudyLarge2020}, Bonifati briefly discuss the idea of \emph{streaks}, where in practice queries are repeated and refined with slight modifications to return the results that the user desires. One potentially interesting area of future work could be to come up with a feasible notion of the similarity between two regular path queries, and to determine how evaluating one query can be utilised to evaluate other similar queries.
 
 \end{itemize}
 
