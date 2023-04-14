@@ -1,0 +1,35 @@
+\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,thick]
+\tikzstyle{state}=[circle,draw,minimum size=1cm]
+\node [state] (v1) at (-4,1) {x};
+\node [state] (v2) at (3,1) {y};
+
+
+\node [state] (p1) at (-0.5,1) {$p_1$};
+\node [state] (p2) at (-0.5,3.5) {$p_2$};
+
+\node [state] (q1) at (-4,-1) {$q_1$};
+\node [state] (q2) at (-4,-3) {$q_2$};
+\node [state] (q3) at (-0.5,-3) {$q_3$};
+\node [state] (q4) at (3,-3) {$q_4$};
+\node [state] (q5) at (3,-1) {$q_5$};
+
+\path[every node/.style={font=\sffamily\small}]
+    (v1) edge node [above] {a} (p1)
+    (p1) edge [bend left=30] node [left] {a} (p2)
+    (p2) edge [bend left=30] node [right] {a} (p1)
+    (v1) edge node [left] {a} (q1)
+    (q1) edge node [left] {a} (q2)
+    (q2) edge node [below] {a} (q3)
+    (q3) edge node [below] {a} (q4)
+    (q4) edge node [right] {a} (q5)
+    (q5) edge node [right] {a} (v2)
+    (p1) edge node [above] {a} (v2);
+
+
+
+
+
+
+
+
+\end{tikzpicture}
